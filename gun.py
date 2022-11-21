@@ -178,11 +178,18 @@ gun = Gun(screen)
 target = Target()
 finished = False
 
+myimage = pygame.image.load(
+"putin.jpg"
+)
+imagerect = myimage.get_rect()
+
 while not finished:
     screen.fill(WHITE)
     pygame.draw.rect(screen, GREY, (0, 530, 800, 70)) # created earth for balls to bounce
     pygame.draw.rect(screen, GREY, (750, 0, 50, 600)) # created earth for balls to bounce
     gun.draw()
+    screen.blit(myimage, imagerect)
+    pygame.display.flip()
     for t in range(2):
         target.draw()
         target.move()

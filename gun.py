@@ -17,15 +17,15 @@ WIDTH = 800
 HEIGHT = 600
 
 class Ball:
-    def __init__(self, screen: pygame.Surface, x=40, y=450):
+    def __init__(self, screen: pygame.Surface):
         """ Конструктор класса ball
         Args:
         x - начальное положение мяча по горизонтали
         y - начальное положение мяча по вертикали
         """
         self.screen = screen
-        self.x = x
-        self.y = y
+        self.x = gun.x
+        self.y = gun.y - 20
         self.r = 10
         self.vx = 0
         self.vy = 0
@@ -73,6 +73,10 @@ class Gun:
         self.an = 1
         self.color = GREY
         self.bullet = False
+        self.l = 110
+        self.w = 40
+        self.x = 40
+        self.y = 470
     def fire2_start(self, event):
         self.f2_on = 1
     def fire2_end(self, event):
@@ -92,8 +96,8 @@ class Gun:
         self.f2_power = 10
     def targetting(self, event):
         """Прицеливание. Зависит от положения мыши."""
-        if event:
-            self.an = math.atan((event.pos[1]-450) / (event.pos[0]-20))
+        if event and event.pos[0]-self.x != 0:
+            self.an = math.atan((event.pos[1]-self.y) / (event.pos[0]-self.x))
         if self.f2_on:
             self.color = RED
         else:
@@ -102,13 +106,9 @@ class Gun:
         pygame.draw.circle(
             self.screen,
             self.color,
-            (40, 480),
+            (self.x, self.y + 10),
             50
         )
-        self.l = 110
-        self.w = 40
-        self.x = 40
-        self.y = 470
 
         pygame.draw.polygon(screen, self.color,
                         [[self.x, self.y],
@@ -204,6 +204,11 @@ while not finished:
             gun.fire2_end(event)
         elif event.type == pygame.MOUSEMOTION:
             gun.targetting(event)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                gun.x -= 5
+            elif event.key == pygame.K_RIGHT:
+                gun.x += 5
     target.live = 1
     for b in balls:
         b.move()

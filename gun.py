@@ -120,8 +120,8 @@ class Gun:
 
         pygame.draw.polygon(screen, self.color,
                         [[self.x, self.y],
-                         [self.x + self.l*math.cos(self.an), self.y + self.l*math.sin(self.an)],
-                         [self.x + self.l*math.cos(self.an)+self.w*math.sin(self.an), self.y + self.l*math.sin(self.an)-self.w*math.cos(self.an)],
+                         [self.x + (self.f2_power+100)/170*self.l*math.cos(self.an), self.y + (self.f2_power+100)/170*self.l*math.sin(self.an)],
+                         [self.x + (self.f2_power+100)/170*self.l*math.cos(self.an)+self.w*math.sin(self.an), self.y + (self.f2_power+100)/170*self.l*math.sin(self.an)-self.w*math.cos(self.an)],
                          [self.x + self.w*math.sin(self.an), self.y-self.w*math.cos(self.an)]])
     def power_up(self):
         if self.f2_on:

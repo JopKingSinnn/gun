@@ -1,6 +1,7 @@
 import math
 from random import choice, randint
 import pygame
+import time
 FPS = 60
 RED = 0xFF0000
 BLUE = 0x0000FF
@@ -209,6 +210,9 @@ while not finished:
         if hittest(b, target) and target.live:
             target.live = 0
             points += 1
+            scores(screen, 'Вы уничтожили цель за ' + str(bullet) + ' выстрелов', 26, WIDTH / 2, HEIGHT / 2 - 25)
+            pygame.display.update()
+            time.sleep(1)
             for t in range(2):
                 target.new_target()
             print(bullet)

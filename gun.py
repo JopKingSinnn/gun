@@ -139,9 +139,6 @@ class Target:
         r = self.r = randint(2, 50)
         color = self.color = RED
         self.vy=randint(-3, 3)
-    def hit(self, points=1):
-        """Попадание шарика в цель."""
-        self.points += points
     def draw(self):
         # create a surface object, image is drawn on it.
         imp = pygame.draw.circle(screen,
@@ -174,6 +171,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 bullet = 0
 balls = []
 points = 100
+targets = []
 clock =pygame.time.Clock()
 gun = Gun(screen)
 target = Target()
@@ -184,8 +182,9 @@ while not finished:
     pygame.draw.rect(screen, GREY, (0, 530, 800, 70)) # created earth for balls to bounce
     pygame.draw.rect(screen, GREY, (750, 0, 50, 600)) # created earth for balls to bounce
     gun.draw()
-    target.draw()
-    target.move()
+    for t in range(2):
+        target.draw()
+        target.move()
     for b in balls:
         b.draw()
         gun.bullet = False
@@ -209,8 +208,12 @@ while not finished:
         scores(screen, str(points), 26, 15, 10)
         if hittest(b, target) and target.live:
             target.live = 0
-            target.hit()
-            target.new_target()
-
+            points += 1
+            for t in range(2):
+                target.new_target()
+            print(bullet)
+            balls=[]
+            bullet = 0
     gun.power_up()
 pygame.quit()
+print(points)

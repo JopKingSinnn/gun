@@ -48,21 +48,12 @@ class Ball:
         '''
         рисует ядра и дробь
         '''
-        q = randint(1,5)
-        if q != 5: # если держать мышь достаточно долго, то вылетает быстрая пуля
-            pygame.draw.circle(
-                self.screen,
-                self.color,
-                (self.x, self.y),
-                self.r
-            )
-        else:
-            pygame.draw.circle(
-                self.screen,
-                BLACK,
-                (self.x, self.y),
-                self.r/3
-            )
+        pygame.draw.circle(
+            self.screen,
+            self.color,
+            (self.x, self.y),
+            self.r
+        )
 
 def hittest(self, obj):
         """Функция проверяет сталкивалкивается ли данный обьект с целью, описываемой в обьекте obj.
@@ -137,6 +128,7 @@ class Target:
         x - начальное положение мяча по горизонтали
         y - начальное положение мяча по вертикали
         """
+        self.vy=0
         self.points = 0
         self.live = 1
         self.new_target()
@@ -146,6 +138,7 @@ class Target:
         y = self.y = randint(300, 500)
         r = self.r = randint(2, 50)
         color = self.color = RED
+        self.vy=randint(-3, 3)
     def hit(self, points=1):
         """Попадание шарика в цель."""
         self.points += points
@@ -156,15 +149,19 @@ class Target:
             (self.x, self.y),
             self.r
         )
-
+    def move(self):
+        """Переместить мяч по прошествии единицы времени.
+        Метод описывает перемещение мяча за один кадр перерисовки. То есть, обновляет значения
+        self.x и self.y с учетом скоростей self.vx и self.vy, силы гравитации, действующей на мяч,
+        и стен по краям окна (размер окна 800х600).
+        """
+        if  self.y + self.r > 510 or self.y - self.r < 0:
+            self.vy = -self.vy
+        self.y -= self.vy
 font_name = pygame.font.match_font('arial')
 def scores(scr, text, size, x, y):
     '''
-        Функция отображения счета
-        surf - экран
-        text - счет
-        size - не очень большой размер
-        x, y - координаты центра текста
+    вывод счета, берет на вход текст, который надо вывести, его размер и положение на экране
     '''
     font = pygame.font.Font(font_name, size)
     text_surface = font.render(text, True, BLACK)
@@ -176,6 +173,7 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 bullet = 0
 balls = []
+points = 100
 clock =pygame.time.Clock()
 gun = Gun(screen)
 target = Target()
@@ -187,7 +185,7 @@ while not finished:
     pygame.draw.rect(screen, GREY, (750, 0, 50, 600)) # created earth for balls to bounce
     gun.draw()
     target.draw()
-    target.draw()
+    target.move()
     for b in balls:
         b.draw()
         gun.bullet = False
@@ -208,13 +206,11 @@ while not finished:
     target.live = 1
     for b in balls:
         b.move()
+        scores(screen, str(points), 26, 15, 10)
         if hittest(b, target) and target.live:
             target.live = 0
             target.hit()
             target.new_target()
 
     gun.power_up()
-    font = pygame.font.SysFont(None, 68)  # Вывод слова "Счет"
-    img = font.render('Счет:' + str(target.points), True, YELLOW)
-    screen.blit(img, (20, 20))
 pygame.quit()
